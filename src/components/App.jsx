@@ -15,39 +15,7 @@ export class App extends React.Component {
     filter: '',
     
   };
-  
-  addContactToContacts = contact => {
-    const { contacts } = this.state;
-    const createContact = { id: nanoid(), ...contact };
 
-    contacts.some(({ name }) => name === contact.name)
-      ? alert(`${contact.name} is already in your contacts`)
-      : this.setState(prevState => ({
-          contacts: [...prevState.contacts, createContact],
-          
-      }));
-    
-  };
-
-  handleChangeFilter = ({ target: { value } }) => {
-    this.setState({ filter: value });
-  };
-
-  getFilteredContacts = () => {
-    const { filter, contacts } = this.state;
-    const normalized = filter.toLowerCase();
-
-    return contacts.filter(({ name }) => name.includes(normalized));
-  };
-
-  removeContact = id => {
-    this.setState(prevState => {
-      return {
-        contacts: prevState.contacts.filter(contact => contact.id !== id),
-      }
-    })
-  };
-  
   componentDidMount() {
     const loadedContacts = onLoadContact(LS_CONTACT);
     
@@ -66,6 +34,38 @@ export class App extends React.Component {
       onSaveToLocalStorage(LS_CONTACT, contacts);
       
     }
+  };
+  
+  addContactToContacts = contact => {
+    const { contacts } = this.state;
+    const createContact = { id: nanoid(), ...contact };
+
+    contacts.some(({ name }) => name.toLowerCase() === contact.name.toLowerCase())
+      ? alert(`${contact.name.toLowerCase()} is already in your contacts`)
+      : this.setState(prevState => ({
+          contacts: [...prevState.contacts, createContact],
+          
+      }));
+    
+  };
+
+  handleChangeFilter = ({ target: { value } }) => {
+    this.setState({ filter: value });
+  };
+
+  getFilteredContacts = () => {
+    const { filter, contacts } = this.state;
+    const normalized = filter.toLowerCase();
+
+    return contacts.filter(({ name }) => name.toLowerCase().includes(normalized));
+  };
+
+  removeContact = id => {
+    this.setState(prevState => {
+      return {
+        contacts: prevState.contacts.filter(contact => contact.id !== id),
+      }
+    })
   };
   
   render() {
